@@ -86,6 +86,10 @@
             this.BottleCenterX = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.BottleCenterY = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.BallCenterX = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
+            this.BallCenterY = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -682,11 +686,51 @@
             this.BottleCenterY.TabIndex = 81;
             this.BottleCenterY.Text = "--";
             // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(1074, 48);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(90, 17);
+            this.label27.TabIndex = 82;
+            this.label27.Text = "Ball Center X";
+            // 
+            // BallCenterX
+            // 
+            this.BallCenterX.AutoSize = true;
+            this.BallCenterX.Location = new System.Drawing.Point(1104, 70);
+            this.BallCenterX.Name = "BallCenterX";
+            this.BallCenterX.Size = new System.Drawing.Size(18, 17);
+            this.BallCenterX.TabIndex = 83;
+            this.BallCenterX.Text = "--";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(1074, 93);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(90, 17);
+            this.label28.TabIndex = 84;
+            this.label28.Text = "Ball Center Y";
+            // 
+            // BallCenterY
+            // 
+            this.BallCenterY.AutoSize = true;
+            this.BallCenterY.Location = new System.Drawing.Point(1104, 110);
+            this.BallCenterY.Name = "BallCenterY";
+            this.BallCenterY.Size = new System.Drawing.Size(18, 17);
+            this.BallCenterY.TabIndex = 85;
+            this.BallCenterY.Text = "--";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1109, 436);
+            this.ClientSize = new System.Drawing.Size(1243, 436);
+            this.Controls.Add(this.BallCenterY);
+            this.Controls.Add(this.label28);
+            this.Controls.Add(this.BallCenterX);
+            this.Controls.Add(this.label27);
             this.Controls.Add(this.BottleCenterY);
             this.Controls.Add(this.label26);
             this.Controls.Add(this.BottleCenterX);
@@ -816,6 +860,10 @@
         private System.Windows.Forms.Label BottleCenterX;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label BottleCenterY;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label BallCenterX;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label BallCenterY;
     }
 }
 
