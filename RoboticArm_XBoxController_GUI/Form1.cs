@@ -229,13 +229,16 @@ namespace RoboticArm_XBoxController_GUI
             {
                 BallX = BitConverter.ToInt32(bytes, 0);
             });
+            udp_cam4.Start();
 
-            udp_cam5 = new UdpClientSocket(
+           udp_cam5 = new UdpClientSocket(
             System.Net.IPAddress.Parse("127.0.0.1"), 6793);
-            udp_cam4.PackageReceived = (bytes =>
+            udp_cam5.PackageReceived = (bytes =>
             {
                 BallY = BitConverter.ToInt32(bytes, 0);
             });
+
+            udp_cam5.Start();
 
             //fpga.Start();
 
