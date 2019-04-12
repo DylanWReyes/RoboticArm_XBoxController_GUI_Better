@@ -61,6 +61,7 @@ namespace RoboticArm_XBoxController_GUI
       UdpClientSocket udp_cam3 { get; set; }
       UdpClientSocket udp_cam4 { get; set; }
       UdpClientSocket udp_cam5 { get; set; }
+      UdpClientSocket udp_CameraMode { get; set; }
         private bool leftpan = true;
       private bool rightpan = false; 
         private void trackBar_armX_ValueChanged(object sender, EventArgs e)
@@ -192,9 +193,13 @@ namespace RoboticArm_XBoxController_GUI
                 }
                 Console.WriteLine("\n");
             });
-         //start    
-         
-         udp_camera = new UdpClientSocket(
+            //start    
+            udp_CameraMode = new UdpClientSocket(
+            System.Net.IPAddress.Parse("127.0.0.1"), 680);
+            udp_CameraMode.Start();
+
+
+            udp_camera = new UdpClientSocket(
          System.Net.IPAddress.Parse("127.0.0.1"), 6789);
              //define call back
             udp_camera.PackageReceived = (bytes =>
@@ -512,6 +517,22 @@ namespace RoboticArm_XBoxController_GUI
         private void trackBar_ArmY_Scroll(object sender, EventArgs e)
         {
             //Edan Branch
+        }
+
+        private void groupBox5_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CamMode1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CamMode1_Click(object sender, EventArgs e)
+        {
+            byte[] CameraMode = new byte[] { 0x01 };
+            udp_CameraMode.Send(CameraMode);
         }
 
         void LidarRecieve()
