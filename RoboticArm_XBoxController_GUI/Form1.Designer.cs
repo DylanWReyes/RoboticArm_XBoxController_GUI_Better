@@ -188,6 +188,7 @@
             this.trackBar_ArmY.Size = new System.Drawing.Size(283, 56);
             this.trackBar_ArmY.SmallChange = 5;
             this.trackBar_ArmY.TabIndex = 37;
+            this.trackBar_ArmY.Scroll += new System.EventHandler(this.trackBar_ArmY_Scroll);
             this.trackBar_ArmY.ValueChanged += new System.EventHandler(this.trackBar_ArmY_ValueChanged);
             // 
             // label5

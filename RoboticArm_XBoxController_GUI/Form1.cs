@@ -509,6 +509,11 @@ namespace RoboticArm_XBoxController_GUI
 
         }
 
+        private void trackBar_ArmY_Scroll(object sender, EventArgs e)
+        {
+            //Edan Branch
+        }
+
         void LidarRecieve()
         {
             byte checkSum = 0x00; 
