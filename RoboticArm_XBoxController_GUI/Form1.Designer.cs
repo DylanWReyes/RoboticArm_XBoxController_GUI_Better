@@ -90,6 +90,10 @@
             this.BallCenterX = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.BallCenterY = new System.Windows.Forms.Label();
+            this.CamMode1 = new System.Windows.Forms.RadioButton();
+            this.CamMode2 = new System.Windows.Forms.RadioButton();
+            this.CamMode3 = new System.Windows.Forms.RadioButton();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -100,6 +104,7 @@
             this.groupBox_GripperServo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalY)).BeginInit();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer1
@@ -188,6 +193,7 @@
             this.trackBar_ArmY.Size = new System.Drawing.Size(283, 56);
             this.trackBar_ArmY.SmallChange = 5;
             this.trackBar_ArmY.TabIndex = 37;
+            this.trackBar_ArmY.Scroll += new System.EventHandler(this.trackBar_ArmY_Scroll);
             this.trackBar_ArmY.ValueChanged += new System.EventHandler(this.trackBar_ArmY_ValueChanged);
             // 
             // label5
@@ -722,11 +728,62 @@
             this.BallCenterY.TabIndex = 85;
             this.BallCenterY.Text = "--";
             // 
+            // CamMode1
+            // 
+            this.CamMode1.AutoSize = true;
+            this.CamMode1.Location = new System.Drawing.Point(39, 15);
+            this.CamMode1.Name = "CamMode1";
+            this.CamMode1.Size = new System.Drawing.Size(108, 21);
+            this.CamMode1.TabIndex = 52;
+            this.CamMode1.Text = "Cam Mode 1";
+            this.CamMode1.UseVisualStyleBackColor = true;
+            this.CamMode1.CheckedChanged += new System.EventHandler(this.CamMode1_CheckedChanged);
+            this.CamMode1.Click += new System.EventHandler(this.CamMode1_Click);
+            // 
+            // CamMode2
+            // 
+            this.CamMode2.AutoSize = true;
+            this.CamMode2.Location = new System.Drawing.Point(39, 42);
+            this.CamMode2.Name = "CamMode2";
+            this.CamMode2.Size = new System.Drawing.Size(108, 21);
+            this.CamMode2.TabIndex = 52;
+            this.CamMode2.TabStop = true;
+            this.CamMode2.Text = "Cam Mode 2";
+            this.CamMode2.UseVisualStyleBackColor = true;
+            this.CamMode2.CheckedChanged += new System.EventHandler(this.CamMode1_Click);
+            this.CamMode2.Click += new System.EventHandler(this.CamMode2_Click);
+            this.CamMode2.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.CamMode2_ControlAdded);
+            // 
+            // CamMode3
+            // 
+            this.CamMode3.AutoSize = true;
+            this.CamMode3.Location = new System.Drawing.Point(39, 73);
+            this.CamMode3.Name = "CamMode3";
+            this.CamMode3.Size = new System.Drawing.Size(108, 21);
+            this.CamMode3.TabIndex = 52;
+            this.CamMode3.TabStop = true;
+            this.CamMode3.Text = "Cam Mode 3";
+            this.CamMode3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.CamMode2);
+            this.groupBox5.Controls.Add(this.CamMode3);
+            this.groupBox5.Controls.Add(this.CamMode1);
+            this.groupBox5.Location = new System.Drawing.Point(1017, 198);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(200, 100);
+            this.groupBox5.TabIndex = 86;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Computer Vision";
+            this.groupBox5.Enter += new System.EventHandler(this.groupBox5_Enter);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1243, 436);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.BallCenterY);
             this.Controls.Add(this.label28);
             this.Controls.Add(this.BallCenterX);
@@ -796,6 +853,8 @@
             this.groupBox_GripperServo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalY)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -864,6 +923,10 @@
         private System.Windows.Forms.Label BallCenterX;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label BallCenterY;
+        private System.Windows.Forms.RadioButton CamMode1;
+        private System.Windows.Forms.RadioButton CamMode2;
+        private System.Windows.Forms.RadioButton CamMode3;
+        private System.Windows.Forms.GroupBox groupBox5;
     }
 }
 

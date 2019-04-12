@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using SharpDX.XInput;
 using System.Threading;
 using UGV.Core.IO;
+using System.Net.Sockets;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace RoboticArm_XBoxController_GUI
 {
@@ -56,11 +59,9 @@ namespace RoboticArm_XBoxController_GUI
       private int xDir = 0;
       private int yDir = 0;
       private bool found = false; 
-      UdpClientSocket udp_camera { get; set; }
-      UdpClientSocket udp_cam2 { get; set; }
-      UdpClientSocket udp_cam3 { get; set; }
-      UdpClientSocket udp_cam4 { get; set; }
-      UdpClientSocket udp_cam5 { get; set; }
+      UdpClientSocket udp_ball { get; set; }
+      UdpClientSocket udp_bottle { get; set; }
+      UdpClientSocket udp_CameraMode { get; set; }
         private bool leftpan = true;
       private bool rightpan = false; 
         private void trackBar_armX_ValueChanged(object sender, EventArgs e)
@@ -192,53 +193,39 @@ namespace RoboticArm_XBoxController_GUI
                 }
                 Console.WriteLine("\n");
             });
-         //start    
-         
-         udp_camera = new UdpClientSocket(
+            //start
+            
+
+           /* udp_CameraMode = new UdpClientSocket(
+            System.Net.IPAddress.Parse("127.0.0.1"), 6800);
+            udp_CameraMode.Start();*/
+
+
+            udp_bottle = new UdpClientSocket(
          System.Net.IPAddress.Parse("127.0.0.1"), 6789);
              //define call back
-            udp_camera.PackageReceived = (bytes =>
+            udp_bottle.PackageReceived = (bytes =>
          {
             BottleData = BitConverter.ToInt32(bytes, 0);
-                         
-         });
-         udp_camera.Start();
+            BottleX = BitConverter.ToInt32(bytes, sizeof(int));
+            BottleY = BitConverter.ToInt32(bytes, 2*sizeof(int));
 
-            udp_cam2 = new UdpClientSocket(
+
+         });
+         udp_bottle.Start();
+
+            udp_ball = new UdpClientSocket(
             System.Net.IPAddress.Parse("127.0.0.1"), 6790);
 
-            udp_cam2.PackageReceived = (bytes =>
-            {
-                BottleX = BitConverter.ToInt32(bytes, 0);
-                
-            });
-            udp_cam2.Start();
-
-            udp_cam3 = new UdpClientSocket(
-                System.Net.IPAddress.Parse("127.0.0.1"), 6791);
-
-            udp_cam3.PackageReceived = (bytes =>
-            {
-                BottleY = BitConverter.ToInt32(bytes, 0);
-            });
-            udp_cam3.Start();
-
-            udp_cam4 = new UdpClientSocket(
-            System.Net.IPAddress.Parse("127.0.0.1"), 6792);
-            udp_cam4.PackageReceived = (bytes =>
+            udp_ball.PackageReceived = (bytes =>
             {
                 BallX = BitConverter.ToInt32(bytes, 0);
-            });
-            udp_cam4.Start();
+                BallY = BitConverter.ToInt32(bytes, sizeof(int));
 
-           udp_cam5 = new UdpClientSocket(
-            System.Net.IPAddress.Parse("127.0.0.1"), 6793);
-            udp_cam5.PackageReceived = (bytes =>
-            {
-                BallY = BitConverter.ToInt32(bytes, 0);
             });
+            udp_ball.Start();
 
-            udp_cam5.Start();
+            
 
             //fpga.Start();
 
@@ -509,6 +496,53 @@ namespace RoboticArm_XBoxController_GUI
 
         }
 
+        private void trackBar_ArmY_Scroll(object sender, EventArgs e)
+        {
+            //Edan Branch
+        }
+
+        private void groupBox5_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CamMode1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CamMode1_Click(object sender, EventArgs e)
+        {
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPAddress serverAddr = IPAddress.Parse("127.0.0.1");
+            IPEndPoint endPoint = new IPEndPoint(serverAddr, 6800);
+            byte[] CameraMode = new byte[] { 0x01 };
+            
+            sock.SendTo(CameraMode, endPoint);
+        }
+
+        private void CamMode2_ControlAdded(object sender, ControlEventArgs e)
+        {
+
+        }
+
+        private void CamMode2_Click(object sender, EventArgs e)
+        {
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPAddress serverAddr = IPAddress.Parse("127.0.0.1");
+            IPEndPoint endPoint = new IPEndPoint(serverAddr, 6800);
+            byte[] CameraMode = new byte[] { 0x02 };
+
+            sock.SendTo(CameraMode, endPoint);
+
+        }
+
+        private void CamMode2_CheckedChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+
         void LidarRecieve()
         {
             byte checkSum = 0x00; 
@@ -706,10 +740,6 @@ namespace RoboticArm_XBoxController_GUI
          fpga.Send(_gripperPackage);
          fpga.Send(_gimbalThetaPackage);
          fpga.Send(_gimbalPhiPackage);
-
-      }
-      private void btnTestThread_Click(object sender, EventArgs e)
-      {
 
       }
 
