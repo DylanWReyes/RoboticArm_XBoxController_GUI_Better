@@ -590,6 +590,7 @@
             this.RightError.Size = new System.Drawing.Size(18, 17);
             this.RightError.TabIndex = 70;
             this.RightError.Text = "--";
+            this.RightError.Click += new System.EventHandler(this.RightError_Click);
             // 
             // LeftError
             // 

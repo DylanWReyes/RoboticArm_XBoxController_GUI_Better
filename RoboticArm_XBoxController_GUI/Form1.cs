@@ -195,9 +195,9 @@ namespace RoboticArm_XBoxController_GUI
             });
             //start    
             udp_CameraMode = new UdpClientSocket(
-            System.Net.IPAddress.Parse("127.0.0.1"), 680);
+            System.Net.IPAddress.Parse("127.0.0.1"), 6800);
             udp_CameraMode.Start();
-
+            udp_CameraMode.
 
             udp_camera = new UdpClientSocket(
          System.Net.IPAddress.Parse("127.0.0.1"), 6789);
@@ -533,6 +533,11 @@ namespace RoboticArm_XBoxController_GUI
         {
             byte[] CameraMode = new byte[] { 0x01 };
             udp_CameraMode.Send(CameraMode);
+        }
+
+        private void RightError_Click(object sender, EventArgs e)
+        {
+
         }
 
         void LidarRecieve()
