@@ -13,6 +13,7 @@ using UGV.Core.IO;
 using System.Net.Sockets;
 using System.Net;
 using System.Text.RegularExpressions;
+using dynamixel_sdk;
 
 namespace RoboticArm_XBoxController_GUI
 {
@@ -145,7 +146,32 @@ namespace RoboticArm_XBoxController_GUI
         private int BottleY;
         private int BallX;
         private int BallY;
+        ///DYNAMIXEL VALUES
+        // Control table address
+        public const int ADDR_MX_TORQUE_ENABLE = 24;                  // Control table address is different in Dynamixel model
+        public const int ADDR_MX_GOAL_POSITION = 30;
+        public const int ADDR_MX_PRESENT_POSITION = 36;
 
+        // Protocol version
+        public const int PROTOCOL_VERSION = 1;                   // See which protocol version is used in the Dynamixel
+
+        // Default setting
+        public const int GIMBALYAW = 5;                   // Dynamixel ID: 1
+        public const int GIMBALPITCH = 6;
+        public const int FRONTWHEEL = 2;
+        public const int BACKWHEEL = 1;
+        public const int TURRENT = 3;
+        public const int BAUDRATE = 57600;
+        public const string DEVICENAME = "COM11";              // Check which port is being used on your controller                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+
+        public const int TORQUE_ENABLE = 1;                   // Value for enabling the torque
+        public const int TORQUE_DISABLE = 0;                   // Value for disabling the torque
+        public const int GIMBALYAWSTART = 2000;
+        public const int GIMBALPITCHSTART = 1000;
+        public const int FRONTWHEELSTART = 2000;
+        public const int BACKWHEELSTART = 2000;
+        public const int TURRENTSTART = 1300; 
+        ///DYNAMIXEL VALUES    
         Serial fpga = new Serial("COM10", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
 
         public Form1()
@@ -213,7 +239,7 @@ namespace RoboticArm_XBoxController_GUI
 
          });
          udp_bottle.Start();
-
+            
             udp_ball = new UdpClientSocket(
             System.Net.IPAddress.Parse("127.0.0.1"), 6790);
 
@@ -224,9 +250,25 @@ namespace RoboticArm_XBoxController_GUI
 
             });
             udp_ball.Start();
-
-            
-
+            ///DYNAMIXEL CODE
+            int port_num = dynamixel.portHandler(DEVICENAME);
+            dynamixel.packetHandler();
+            dynamixel.openPort(port_num);
+            dynamixel.setBaudRate(port_num, BAUDRATE);
+            //ENABLE TORQUE
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, TURRENT, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            //SET START POS
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, GIMBALPITCHSTART);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, GIMBALYAWSTART);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, TURRENT, ADDR_MX_GOAL_POSITION, TURRENTSTART);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION,FRONTWHEELSTART );
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, BACKWHEELSTART);
+            ///DYNAMIXEL CODE
+            //UNCOMMENT WHEN TESTING FPGA
             //fpga.Start();
 
             // set timer event to start reading and updating from the controller
