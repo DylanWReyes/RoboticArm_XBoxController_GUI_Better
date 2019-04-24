@@ -96,7 +96,10 @@ namespace RoboticArm_XBoxController_GUI
         private void trackBar_gimbalX_ValueChanged(object sender, EventArgs e)
         {
             gimbalX = trackBar_gimbalX.Value;
+            int DynamixelgimbalX = Remap(trackBar_gimbalX.Value, 360, 0, 4000, 0);
             GimbalPhi(gimbalX);
+            //dynamixel stuff
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
         }
 
         private void trackBar_ArmY_ValueChanged(object sender, EventArgs e)
@@ -109,9 +112,12 @@ namespace RoboticArm_XBoxController_GUI
         private void trackBar_gimbalY_ValueChanged(object sender, EventArgs e)
         {
             gimbalY = trackBar_gimbalY.Value;
-            GimbalTheta(gimbalY); 
+            int DynamixelgimbalY =Remap(trackBar_gimbalY.Value, 100, 0, 512, 1655);
+            gimbalY = DynamixelgimbalY;
+            GimbalTheta(gimbalY);
+            //Dynamixel stuff
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
         }
-
         private void button1_Click_1(object sender, EventArgs e)
         {
             LidarRecieve();
@@ -170,8 +176,9 @@ namespace RoboticArm_XBoxController_GUI
         public const int GIMBALPITCHSTART = 1000;
         public const int FRONTWHEELSTART = 2000;
         public const int BACKWHEELSTART = 2000;
-        public const int TURRENTSTART = 1300; 
+        public const int TURRENTSTART = 1300;
         ///DYNAMIXEL VALUES    
+        int port_num = dynamixel.portHandler(DEVICENAME);
         Serial fpga = new Serial("COM10", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
 
         public Form1()
@@ -251,7 +258,6 @@ namespace RoboticArm_XBoxController_GUI
             });
             udp_ball.Start();
             ///DYNAMIXEL CODE
-            int port_num = dynamixel.portHandler(DEVICENAME);
             dynamixel.packetHandler();
             dynamixel.openPort(port_num);
             dynamixel.setBaudRate(port_num, BAUDRATE);
@@ -784,7 +790,13 @@ namespace RoboticArm_XBoxController_GUI
          fpga.Send(_gimbalPhiPackage);
 
       }
-
+      private int Remap(int OldValue, int OldMax,int OldMin,int NewMax,int NewMin)
+       {
+            int OldRange = (OldMax - OldMin);
+            int NewRange = (NewMax - NewMin);
+            int NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+            return NewValue;
+       }
       // This method is executed on the worker thread and makes 
       // a thread-safe call on the TextBox control. 
       private void ThreadProcSafe()
