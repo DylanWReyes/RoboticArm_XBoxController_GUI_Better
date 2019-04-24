@@ -113,7 +113,6 @@ namespace RoboticArm_XBoxController_GUI
         {
             gimbalY = trackBar_gimbalY.Value;
             int DynamixelgimbalY =Remap(trackBar_gimbalY.Value, 100, 0, 512, 1655);
-            gimbalY = DynamixelgimbalY;
             GimbalTheta(gimbalY);
             //Dynamixel stuff
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
@@ -242,7 +241,10 @@ namespace RoboticArm_XBoxController_GUI
             BottleData = BitConverter.ToInt32(bytes, 0);
             BottleX = BitConverter.ToInt32(bytes, sizeof(int));
             BottleY = BitConverter.ToInt32(bytes, 2*sizeof(int));
-
+            if(track)
+             {
+                 GimbalTracking(BottleX, BottleY);
+             }
 
          });
          udp_bottle.Start();
@@ -297,14 +299,20 @@ namespace RoboticArm_XBoxController_GUI
          //640 height
          //480 width
          xError = (xError - 240)/45;
-         yError = (yError - 320)/45;
+         yError = (yError - 340)/45;
          if(gimbalY - yError < 100 && gimbalY - yError > 0)
             gimbalY -= yError;
          if (gimbalX - xError < 360 && gimbalX - xError > 0)
             gimbalX -= xError;
          GimbalPhi(gimbalX);
          GimbalTheta(gimbalY);
-      }
+         int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
+         int DynamixelgimbalX = Remap(gimbalX, 360, 0, 4000, 0);
+         //dynamixel stuff
+         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
+         //Dynamixel stuff
+         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
+        }
       void SearchObject()
       {
          if(leftpan)
