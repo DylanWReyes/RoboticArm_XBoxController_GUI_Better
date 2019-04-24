@@ -94,6 +94,10 @@
             this.CamMode2 = new System.Windows.Forms.RadioButton();
             this.CamMode3 = new System.Windows.Forms.RadioButton();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.trackbar_WheelSteering = new System.Windows.Forms.TrackBar();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.trackBar_WheelSpeed = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -105,6 +109,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalY)).BeginInit();
             this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackbar_WheelSteering)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_WheelSpeed)).BeginInit();
             this.SuspendLayout();
             // 
             // timer1
@@ -778,11 +784,58 @@
             this.groupBox5.Text = "Computer Vision";
             this.groupBox5.Enter += new System.EventHandler(this.groupBox5_Enter);
             // 
+            // trackbar_WheelSteering
+            // 
+            this.trackbar_WheelSteering.Location = new System.Drawing.Point(1243, 213);
+            this.trackbar_WheelSteering.Margin = new System.Windows.Forms.Padding(4);
+            this.trackbar_WheelSteering.Maximum = 54;
+            this.trackbar_WheelSteering.Name = "trackbar_WheelSteering";
+            this.trackbar_WheelSteering.Size = new System.Drawing.Size(262, 56);
+            this.trackbar_WheelSteering.SmallChange = 5;
+            this.trackbar_WheelSteering.TabIndex = 87;
+            this.trackbar_WheelSteering.Value = 27;
+            this.trackbar_WheelSteering.ValueChanged += new System.EventHandler(this.trackbar_WheelSteering_ValueChanged);
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(1336, 176);
+            this.label29.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(88, 17);
+            this.label29.TabIndex = 88;
+            this.label29.Text = "Wheel Angle";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(1336, 267);
+            this.label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(93, 17);
+            this.label30.TabIndex = 90;
+            this.label30.Text = "Wheel Speed";
+            // 
+            // trackBar_WheelSpeed
+            // 
+            this.trackBar_WheelSpeed.Location = new System.Drawing.Point(1243, 297);
+            this.trackBar_WheelSpeed.Margin = new System.Windows.Forms.Padding(4);
+            this.trackBar_WheelSpeed.Maximum = 99;
+            this.trackBar_WheelSpeed.Name = "trackBar_WheelSpeed";
+            this.trackBar_WheelSpeed.Size = new System.Drawing.Size(262, 56);
+            this.trackBar_WheelSpeed.SmallChange = 5;
+            this.trackBar_WheelSpeed.TabIndex = 91;
+            this.trackBar_WheelSpeed.ValueChanged += new System.EventHandler(this.trackBar_WheelSpeed_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1243, 436);
+            this.ClientSize = new System.Drawing.Size(1571, 436);
+            this.Controls.Add(this.trackBar_WheelSpeed);
+            this.Controls.Add(this.label30);
+            this.Controls.Add(this.label29);
+            this.Controls.Add(this.trackbar_WheelSteering);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.BallCenterY);
             this.Controls.Add(this.label28);
@@ -855,6 +908,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_gimbalY)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackbar_WheelSteering)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_WheelSpeed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -927,6 +982,10 @@
         private System.Windows.Forms.RadioButton CamMode2;
         private System.Windows.Forms.RadioButton CamMode3;
         private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.TrackBar trackbar_WheelSteering;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.TrackBar trackBar_WheelSpeed;
     }
 }
 

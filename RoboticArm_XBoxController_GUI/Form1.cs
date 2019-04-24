@@ -49,6 +49,7 @@ namespace RoboticArm_XBoxController_GUI
       private int armY = 0;
       private int gimbalX = 180;
       private int gimbalY = 50;
+      private int WheelSpeed = 0;
       private bool gripper = true;
       private bool armReset = false;
       private bool firstreset = false;
@@ -117,6 +118,21 @@ namespace RoboticArm_XBoxController_GUI
             //Dynamixel stuff
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
         }
+        private void trackbar_WheelSteering_ValueChanged(object sender, EventArgs e)
+        {
+         
+        }
+        private void trackBar_WheelSpeed_ValueChanged(object sender, EventArgs e)
+        {
+            WheelSpeed = trackBar_WheelSpeed.Value;
+            int FPGAWheelSpeed = Remap(trackBar_WheelSpeed.Value, 99, 0, 255, 0);
+            byte[] FPGAWheelSpeedbytes = ConvertInt32ToByteArray(FPGAWheelSpeed);
+            byte[] _FPGAWheelSpeedPackage = new byte[] {
+                FPGAWheelSpeedbytes[0],                  
+                };
+
+            tempfpga.Send(_FPGAWheelSpeedPackage);
+        }
         private void button1_Click_1(object sender, EventArgs e)
         {
             LidarRecieve();
@@ -178,14 +194,15 @@ namespace RoboticArm_XBoxController_GUI
         public const int TURRENTSTART = 1300;
         ///DYNAMIXEL VALUES    
         int port_num = dynamixel.portHandler(DEVICENAME);
-        Serial fpga = new Serial("COM10", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
-
+        Serial fpga = new Serial("COM4", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
+        Serial tempfpga = new Serial("COM10", 115200);
         public Form1()
         {
             InitializeComponent();
 
             //construct fpga
             fpga.PackageMode = Serial.PackageModes.UseFPGA;       // for FPGA
+            tempfpga.PackageMode = Serial.PackageModes.UseFPGA;
             //define callback
             fpga.PackageReceived = (bytes =>
             {
@@ -278,7 +295,7 @@ namespace RoboticArm_XBoxController_GUI
             ///DYNAMIXEL CODE
             //UNCOMMENT WHEN TESTING FPGA
             //fpga.Start();
-
+            tempfpga.Start();
             // set timer event to start reading and updating from the controller
             timer1.Start();
         }
@@ -298,8 +315,8 @@ namespace RoboticArm_XBoxController_GUI
       {
          //640 height
          //480 width
-         xError = (xError - 240)/45;
-         yError = (yError - 340)/45;
+         xError = (xError - 240)/30;
+         yError = (yError - 340)/30;
          if(gimbalY - yError < 100 && gimbalY - yError > 0)
             gimbalY -= yError;
          if (gimbalX - xError < 360 && gimbalX - xError > 0)
@@ -598,6 +615,7 @@ namespace RoboticArm_XBoxController_GUI
             
         }
 
+        
 
         void LidarRecieve()
         {
