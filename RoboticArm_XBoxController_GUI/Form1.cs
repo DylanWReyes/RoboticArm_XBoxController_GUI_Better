@@ -50,6 +50,8 @@ namespace RoboticArm_XBoxController_GUI
       private int gimbalX = 180;
       private int gimbalY = 50;
       private int WheelSpeed = 0;
+      private int FrontWheelAngle = 27;
+      private int BackWheelAngle = 27;
       private bool gripper = true;
       private bool armReset = false;
       private bool firstreset = false;
@@ -120,7 +122,11 @@ namespace RoboticArm_XBoxController_GUI
         }
         private void trackbar_WheelSteering_ValueChanged(object sender, EventArgs e)
         {
-         
+            FrontWheelAngle = trackbar_WheelSteering.Value;
+            int DynamixelFrontWheelAngle = Remap(FrontWheelAngle, 54, 0, 2400, 1700);
+            int DynamixelBackWheelAngle = Remap(FrontWheelAngle, 54, 0, 1700, 2400);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelBackWheelAngle);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelFrontWheelAngle);
         }
         private void trackBar_WheelSpeed_ValueChanged(object sender, EventArgs e)
         {
@@ -293,9 +299,10 @@ namespace RoboticArm_XBoxController_GUI
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION,FRONTWHEELSTART );
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, BACKWHEELSTART);
             ///DYNAMIXEL CODE
+            //tempfpga.Start();
             //UNCOMMENT WHEN TESTING FPGA
             //fpga.Start();
-            tempfpga.Start();
+
             // set timer event to start reading and updating from the controller
             timer1.Start();
         }
