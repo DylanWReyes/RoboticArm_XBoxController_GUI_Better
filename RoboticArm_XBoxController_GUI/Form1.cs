@@ -13,6 +13,7 @@ using UGV.Core.IO;
 using System.Net.Sockets;
 using System.Net;
 using System.Text.RegularExpressions;
+using dynamixel_sdk;
 
 namespace RoboticArm_XBoxController_GUI
 {
@@ -48,6 +49,9 @@ namespace RoboticArm_XBoxController_GUI
       private int armY = 0;
       private int gimbalX = 180;
       private int gimbalY = 50;
+      private int WheelSpeed = 0;
+      private int FrontWheelAngle = 27;
+      private int BackWheelAngle = 27;
       private bool gripper = true;
       private bool armReset = false;
       private bool firstreset = false;
@@ -95,7 +99,10 @@ namespace RoboticArm_XBoxController_GUI
         private void trackBar_gimbalX_ValueChanged(object sender, EventArgs e)
         {
             gimbalX = trackBar_gimbalX.Value;
+            int DynamixelgimbalX = Remap(trackBar_gimbalX.Value, 360, 0, 4000, 0);
             GimbalPhi(gimbalX);
+            //dynamixel stuff
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
         }
 
         private void trackBar_ArmY_ValueChanged(object sender, EventArgs e)
@@ -108,9 +115,30 @@ namespace RoboticArm_XBoxController_GUI
         private void trackBar_gimbalY_ValueChanged(object sender, EventArgs e)
         {
             gimbalY = trackBar_gimbalY.Value;
-            GimbalTheta(gimbalY); 
+            int DynamixelgimbalY =Remap(trackBar_gimbalY.Value, 100, 0, 512, 1655);
+            GimbalTheta(gimbalY);
+            //Dynamixel stuff
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
         }
+        private void trackbar_WheelSteering_ValueChanged(object sender, EventArgs e)
+        {
+            FrontWheelAngle = trackbar_WheelSteering.Value;
+            int DynamixelFrontWheelAngle = Remap(FrontWheelAngle, 54, 0, 2400, 1700);
+            int DynamixelBackWheelAngle = Remap(FrontWheelAngle, 54, 0, 1700, 2400);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelBackWheelAngle);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelFrontWheelAngle);
+        }
+        private void trackBar_WheelSpeed_ValueChanged(object sender, EventArgs e)
+        {
+            WheelSpeed = trackBar_WheelSpeed.Value;
+            int FPGAWheelSpeed = Remap(trackBar_WheelSpeed.Value, 99, 0, 255, 0);
+            byte[] FPGAWheelSpeedbytes = ConvertInt32ToByteArray(FPGAWheelSpeed);
+            byte[] _FPGAWheelSpeedPackage = new byte[] {
+                FPGAWheelSpeedbytes[0],                  
+                };
 
+            tempfpga.Send(_FPGAWheelSpeedPackage);
+        }
         private void button1_Click_1(object sender, EventArgs e)
         {
             LidarRecieve();
@@ -145,15 +173,42 @@ namespace RoboticArm_XBoxController_GUI
         private int BottleY;
         private int BallX;
         private int BallY;
+        ///DYNAMIXEL VALUES
+        // Control table address
+        public const int ADDR_MX_TORQUE_ENABLE = 24;                  // Control table address is different in Dynamixel model
+        public const int ADDR_MX_GOAL_POSITION = 30;
+        public const int ADDR_MX_PRESENT_POSITION = 36;
 
-        Serial fpga = new Serial("COM10", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
+        // Protocol version
+        public const int PROTOCOL_VERSION = 1;                   // See which protocol version is used in the Dynamixel
 
+        // Default setting
+        public const int GIMBALYAW = 5;                   // Dynamixel ID: 1
+        public const int GIMBALPITCH = 6;
+        public const int FRONTWHEEL = 2;
+        public const int BACKWHEEL = 1;
+        public const int TURRENT = 3;
+        public const int BAUDRATE = 57600;
+        public const string DEVICENAME = "COM11";              // Check which port is being used on your controller                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+
+        public const int TORQUE_ENABLE = 1;                   // Value for enabling the torque
+        public const int TORQUE_DISABLE = 0;                   // Value for disabling the torque
+        public const int GIMBALYAWSTART = 2000;
+        public const int GIMBALPITCHSTART = 1000;
+        public const int FRONTWHEELSTART = 2000;
+        public const int BACKWHEELSTART = 2000;
+        public const int TURRENTSTART = 1300;
+        ///DYNAMIXEL VALUES    
+        int port_num = dynamixel.portHandler(DEVICENAME);
+        Serial fpga = new Serial("COM4", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
+        Serial tempfpga = new Serial("COM10", 115200);
         public Form1()
         {
             InitializeComponent();
 
             //construct fpga
             fpga.PackageMode = Serial.PackageModes.UseFPGA;       // for FPGA
+            tempfpga.PackageMode = Serial.PackageModes.UseFPGA;
             //define callback
             fpga.PackageReceived = (bytes =>
             {
@@ -209,11 +264,14 @@ namespace RoboticArm_XBoxController_GUI
             BottleData = BitConverter.ToInt32(bytes, 0);
             BottleX = BitConverter.ToInt32(bytes, sizeof(int));
             BottleY = BitConverter.ToInt32(bytes, 2*sizeof(int));
-
+            if(track)
+             {
+                 GimbalTracking(BottleX, BottleY);
+             }
 
          });
          udp_bottle.Start();
-
+            
             udp_ball = new UdpClientSocket(
             System.Net.IPAddress.Parse("127.0.0.1"), 6790);
 
@@ -224,9 +282,25 @@ namespace RoboticArm_XBoxController_GUI
 
             });
             udp_ball.Start();
-
-            
-
+            ///DYNAMIXEL CODE
+            dynamixel.packetHandler();
+            dynamixel.openPort(port_num);
+            dynamixel.setBaudRate(port_num, BAUDRATE);
+            //ENABLE TORQUE
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+          //  dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, TURRENT, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+            //SET START POS
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, GIMBALPITCHSTART);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, GIMBALYAWSTART);
+           // dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, TURRENT, ADDR_MX_GOAL_POSITION, TURRENTSTART);
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION,FRONTWHEELSTART );
+            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, BACKWHEELSTART);
+            ///DYNAMIXEL CODE
+            //tempfpga.Start();
+            //UNCOMMENT WHEN TESTING FPGA
             //fpga.Start();
 
             // set timer event to start reading and updating from the controller
@@ -248,15 +322,21 @@ namespace RoboticArm_XBoxController_GUI
       {
          //640 height
          //480 width
-         xError = (xError - 240)/45;
-         yError = (yError - 320)/45;
+         xError = (xError - 240)/30;
+         yError = (yError - 340)/30;
          if(gimbalY - yError < 100 && gimbalY - yError > 0)
             gimbalY -= yError;
          if (gimbalX - xError < 360 && gimbalX - xError > 0)
             gimbalX -= xError;
          GimbalPhi(gimbalX);
          GimbalTheta(gimbalY);
-      }
+         int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
+         int DynamixelgimbalX = Remap(gimbalX, 360, 0, 4000, 0);
+         //dynamixel stuff
+         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
+         //Dynamixel stuff
+         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
+        }
       void SearchObject()
       {
          if(leftpan)
@@ -542,6 +622,7 @@ namespace RoboticArm_XBoxController_GUI
             
         }
 
+        
 
         void LidarRecieve()
         {
@@ -742,7 +823,13 @@ namespace RoboticArm_XBoxController_GUI
          fpga.Send(_gimbalPhiPackage);
 
       }
-
+      private int Remap(int OldValue, int OldMax,int OldMin,int NewMax,int NewMin)
+       {
+            int OldRange = (OldMax - OldMin);
+            int NewRange = (NewMax - NewMin);
+            int NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+            return NewValue;
+       }
       // This method is executed on the worker thread and makes 
       // a thread-safe call on the TextBox control. 
       private void ThreadProcSafe()
