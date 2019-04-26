@@ -322,12 +322,31 @@ namespace RoboticArm_XBoxController_GUI
       {
          //640 height
          //480 width
-         xError = (xError - 240)/30;
-         yError = (yError - 340)/30;
-         if(gimbalY - yError < 100 && gimbalY - yError > 0)
-            gimbalY -= yError;
-         if (gimbalX - xError < 360 && gimbalX - xError > 0)
-            gimbalX -= xError;
+         while (1) 
+         {
+             if ((gimbalX < 235 || gimbalX > 245))							// check if gimbalX is not within +/- 5 pixels of x center
+             {
+                 //changing gimbalX
+                 BottleX = 240 - BottleX;									// calculate x discrepancy
+                 if (BottleX < 0)
+                     gimbalX = gimbalX + (abs(BottleX) / 240);			// increase gimbalX if x discrepancy < 0
+                 else
+                     gimbalX = gimbalX - (abs(BottleX) / 240);			// decrease gimbalX if x discrepancy > 0 
+
+                 //changing gimbalY
+                 BottleY = 340 - BottleY;									// calculate y discrepancy
+                 if (BottleY < 0)
+                     gimbalY = gimbalY + (abs(BottleY) / 340);			// increase gimbalY if y discrepancy < 0
+                 else
+                     gimbalY = gimbalY - (abs(BottleY) / 340);			// decrease gimbalY if y discrepancy > 0
+             }
+
+             if ((gimbalX > 235 && gimbalX < 245) && (gimbalY > 315 && gimbalY < 325))
+             {
+                 break;														// escape GimbalTracking if gimbalY and gimbalX are within acceptable boundary
+             }
+         }
+        
          GimbalPhi(gimbalX);
          GimbalTheta(gimbalY);
          int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
