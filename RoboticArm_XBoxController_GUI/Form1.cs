@@ -322,39 +322,43 @@ namespace RoboticArm_XBoxController_GUI
       {
          //640 height
          //480 width
-         while (1) 
+         while (true) 
          {
              if ((gimbalX < 235 || gimbalX > 245))							// check if gimbalX is not within +/- 5 pixels of x center
              {
                  //changing gimbalX
                  BottleX = 240 - BottleX;									// calculate x discrepancy
                  if (BottleX < 0)
-                     gimbalX = gimbalX + (abs(BottleX) / 240);			// increase gimbalX if x discrepancy < 0
+                     gimbalX = gimbalX + (Math.Abs(BottleX) / 240);			// increase gimbalX if x discrepancy < 0
                  else
-                     gimbalX = gimbalX - (abs(BottleX) / 240);			// decrease gimbalX if x discrepancy > 0 
+                     gimbalX = gimbalX - (Math.Abs(BottleX) / 240);			// decrease gimbalX if x discrepancy > 0 
 
                  //changing gimbalY
                  BottleY = 340 - BottleY;									// calculate y discrepancy
                  if (BottleY < 0)
-                     gimbalY = gimbalY + (abs(BottleY) / 340);			// increase gimbalY if y discrepancy < 0
+                     gimbalY = gimbalY + (Math.Abs(BottleY) / 340);			// increase gimbalY if y discrepancy < 0
                  else
-                     gimbalY = gimbalY - (abs(BottleY) / 340);			// decrease gimbalY if y discrepancy > 0
+                     gimbalY = gimbalY - (Math.Abs(BottleY) / 340);			// decrease gimbalY if y discrepancy > 0
              }
 
              if ((gimbalX > 235 && gimbalX < 245) && (gimbalY > 315 && gimbalY < 325))
              {
                  break;														// escape GimbalTracking if gimbalY and gimbalX are within acceptable boundary
              }
-         }
-        
+             if((gimbalY > 100 || gimbalY < 0) || (gimbalX > 360 || gimbalX < 0))
+                {
+                    break;
+                }
+             int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
+             int DynamixelgimbalX = Remap(gimbalX, 360, 0, 4000, 0);
+             //dynamixel stuff
+             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
+             //Dynamixel stuff
+             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
+            }
+         
          GimbalPhi(gimbalX);
          GimbalTheta(gimbalY);
-         int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
-         int DynamixelgimbalX = Remap(gimbalX, 360, 0, 4000, 0);
-         //dynamixel stuff
-         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
-         //Dynamixel stuff
-         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
         }
       void SearchObject()
       {
