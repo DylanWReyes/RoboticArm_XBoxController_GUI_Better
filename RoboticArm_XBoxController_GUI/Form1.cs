@@ -123,8 +123,8 @@ namespace RoboticArm_XBoxController_GUI
         private void trackbar_WheelSteering_ValueChanged(object sender, EventArgs e)
         {
             FrontWheelAngle = trackbar_WheelSteering.Value;
-            int DynamixelFrontWheelAngle = Remap(FrontWheelAngle, 54, 0, 2400, 1700);
-            int DynamixelBackWheelAngle = Remap(FrontWheelAngle, 54, 0, 1700, 2400);
+            int DynamixelFrontWheelAngle = Remap(FrontWheelAngle, 54, 0, 2330, 1730);
+            int DynamixelBackWheelAngle = Remap(FrontWheelAngle, 54, 0, 1730, 2330);
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelBackWheelAngle);
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelFrontWheelAngle);
         }
