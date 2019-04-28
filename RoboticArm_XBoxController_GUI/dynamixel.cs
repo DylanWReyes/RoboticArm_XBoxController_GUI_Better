@@ -23,7 +23,7 @@ namespace dynamixel_sdk
 {
   class dynamixel
   {
-    const string dll_path = @"C:\Users\bulun\Desktop\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI_Better\packages\dxl_x64_c.dll";
+    const string dll_path = @"C:\Users\epowe\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\packages\dxl_x64_c.dll";
 
     #region PortHandler
     [DllImport(dll_path)]
