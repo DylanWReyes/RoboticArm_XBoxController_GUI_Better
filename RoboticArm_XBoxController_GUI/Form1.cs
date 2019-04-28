@@ -66,6 +66,11 @@ namespace RoboticArm_XBoxController_GUI
       UdpClientSocket udp_ball { get; set; }
       UdpClientSocket udp_bottle { get; set; }
       UdpClientSocket udp_CameraMode { get; set; }
+
+      Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+      IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 6800);
+
+        byte[] CameraMode = new byte[] { 0x01 };
         private bool leftpan = true;
       private bool rightpan = false; 
         private void trackBar_armX_ValueChanged(object sender, EventArgs e)
@@ -250,11 +255,10 @@ namespace RoboticArm_XBoxController_GUI
                 Console.WriteLine("\n");
             });
             //start
+
+
             
 
-           /* udp_CameraMode = new UdpClientSocket(
-            System.Net.IPAddress.Parse("127.0.0.1"), 6800);
-            udp_CameraMode.Start();*/
 
 
             udp_bottle = new UdpClientSocket(
@@ -597,10 +601,7 @@ namespace RoboticArm_XBoxController_GUI
 
         private void CamMode1_Click(object sender, EventArgs e)
         {
-            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPAddress serverAddr = IPAddress.Parse("127.0.0.1");
-            IPEndPoint endPoint = new IPEndPoint(serverAddr, 6800);
-            byte[] CameraMode = new byte[] { 0x01 };
+           byte[] CameraMode = new byte[] { 0x01 };
             
             sock.SendTo(CameraMode, endPoint);
         }
@@ -612,9 +613,7 @@ namespace RoboticArm_XBoxController_GUI
 
         private void CamMode2_Click(object sender, EventArgs e)
         {
-            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPAddress serverAddr = IPAddress.Parse("127.0.0.1");
-            IPEndPoint endPoint = new IPEndPoint(serverAddr, 6800);
+           
             byte[] CameraMode = new byte[] { 0x02 };
 
             sock.SendTo(CameraMode, endPoint);
