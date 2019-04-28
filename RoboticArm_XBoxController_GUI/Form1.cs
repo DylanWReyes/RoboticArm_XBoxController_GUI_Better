@@ -173,6 +173,7 @@ namespace RoboticArm_XBoxController_GUI
         private int BottleY;
         private int BallX;
         private int BallY;
+        private int Targetbit;
         ///DYNAMIXEL VALUES
         // Control table address
         public const int ADDR_MX_TORQUE_ENABLE = 24;                  // Control table address is different in Dynamixel model
@@ -264,7 +265,8 @@ namespace RoboticArm_XBoxController_GUI
             BottleData = BitConverter.ToInt32(bytes, 0);
             BottleX = BitConverter.ToInt32(bytes, sizeof(int));
             BottleY = BitConverter.ToInt32(bytes, 2*sizeof(int));
-            if(track)
+            Targetbit = BitConverter.ToInt32(bytes, 3 * sizeof(int));
+             if (track)
              {
                  GimbalTracking(BottleX, BottleY);
              }
@@ -279,12 +281,14 @@ namespace RoboticArm_XBoxController_GUI
             {
                 BallX = BitConverter.ToInt32(bytes, 0);
                 BallY = BitConverter.ToInt32(bytes, sizeof(int));
+                Targetbit = BitConverter.ToInt32(bytes, 2*sizeof(int));
+
 
             });
             udp_ball.Start();
             ///DYNAMIXEL CODE
             dynamixel.packetHandler();
-            dynamixel.openPort(port_num);
+            //dynamixel.openPort(port_num);
             dynamixel.setBaudRate(port_num, BAUDRATE);
             //ENABLE TORQUE
             dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
@@ -622,7 +626,10 @@ namespace RoboticArm_XBoxController_GUI
             
         }
 
-        
+        private void label32_Click(object sender, EventArgs e)
+        {
+
+        }
 
         void LidarRecieve()
         {
@@ -850,6 +857,7 @@ namespace RoboticArm_XBoxController_GUI
          ThreadHelperClass.SetText(this, BottleCenterY, BottleY.ToString());
          ThreadHelperClass.SetText(this, BallCenterX, BallX.ToString());
          ThreadHelperClass.SetText(this, BallCenterY, BallY.ToString());
+         ThreadHelperClass.SetText(this, Target, Targetbit.ToString());
 
         }
 

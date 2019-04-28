@@ -98,6 +98,8 @@
             this.label29 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.trackBar_WheelSpeed = new System.Windows.Forms.TrackBar();
+            this.label31 = new System.Windows.Forms.Label();
+            this.Target = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -827,11 +829,32 @@
             this.trackBar_WheelSpeed.TabIndex = 91;
             this.trackBar_WheelSpeed.ValueChanged += new System.EventHandler(this.trackBar_WheelSpeed_ValueChanged);
             // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(1184, 48);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(94, 17);
+            this.label31.TabIndex = 92;
+            this.label31.Text = "Target Found";
+            // 
+            // Target
+            // 
+            this.Target.AutoSize = true;
+            this.Target.Location = new System.Drawing.Point(1227, 70);
+            this.Target.Name = "Target";
+            this.Target.Size = new System.Drawing.Size(18, 17);
+            this.Target.TabIndex = 93;
+            this.Target.Text = "--";
+            this.Target.Click += new System.EventHandler(this.label32_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1571, 436);
+            this.Controls.Add(this.Target);
+            this.Controls.Add(this.label31);
             this.Controls.Add(this.trackBar_WheelSpeed);
             this.Controls.Add(this.label30);
             this.Controls.Add(this.label29);
@@ -986,6 +1009,8 @@
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.TrackBar trackBar_WheelSpeed;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label Target;
     }
 }
 
