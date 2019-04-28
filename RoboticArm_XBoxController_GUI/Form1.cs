@@ -47,8 +47,8 @@ namespace RoboticArm_XBoxController_GUI
       private int turretServo = 135;
       private int armX = 0;
       private int armY = 0;
-      private int gimbalX = 180;
-      private int gimbalY = 50;
+      private float gimbalX = 180;
+      private float gimbalY = 50;
       private int WheelSpeed = 0;
       private int FrontWheelAngle = 27;
       private int BackWheelAngle = 27;
@@ -100,7 +100,7 @@ namespace RoboticArm_XBoxController_GUI
         {
             gimbalX = trackBar_gimbalX.Value;
             int DynamixelgimbalX = Remap(trackBar_gimbalX.Value, 360, 0, 4000, 0);
-            GimbalPhi(gimbalX);
+            GimbalPhi((int)gimbalX);
             //dynamixel stuff
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
         }
@@ -116,7 +116,7 @@ namespace RoboticArm_XBoxController_GUI
         {
             gimbalY = trackBar_gimbalY.Value;
             int DynamixelgimbalY =Remap(trackBar_gimbalY.Value, 100, 0, 512, 1655);
-            GimbalTheta(gimbalY);
+            GimbalTheta((int)gimbalY);
             //Dynamixel stuff
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
         }
@@ -326,14 +326,14 @@ namespace RoboticArm_XBoxController_GUI
       {
          //640 height
          //480 width
-         xError = (xError - 240)/30;
-         yError = (yError - 340)/30;
-         if(gimbalY - yError < 100 && gimbalY - yError > 0)
-            gimbalY -= yError;
-         if (gimbalX - xError < 360 && gimbalX - xError > 0)
-            gimbalX -= xError;
-         GimbalPhi(gimbalX);
-         GimbalTheta(gimbalY);
+         float FloatxError = ((float)xError - 240)/50;
+         float FloatyError = ((float)yError - 340)/50;
+         if((gimbalY - FloatyError < 50 && gimbalY - FloatyError > 0) && (Math.Abs(FloatyError*50) > 10))
+            gimbalY -= FloatyError;
+         if ((gimbalX - FloatxError < 360 && gimbalX - FloatxError > 0) && (Math.Abs(FloatxError * 50) > 10))
+            gimbalX -= FloatxError;
+         GimbalPhi((int)gimbalX);
+         GimbalTheta((int)gimbalY);
          int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
          int DynamixelgimbalX = Remap(gimbalX, 360, 0, 4000, 0);
          //dynamixel stuff
@@ -450,7 +450,7 @@ namespace RoboticArm_XBoxController_GUI
                 LidarRecieve();
                 while (!PackageRecieved) ;// Maybe create a limit for how long it waits 
                 PackageRecieved = false;
-                RobotArmDirections = AutonomousRetrieval(gimbalX, gimbalY, LidarDistance);
+                RobotArmDirections = AutonomousRetrieval((int)gimbalX, (int)gimbalY, LidarDistance);
                 if ((RobotArmDirections[1] >= 0 && RobotArmDirections[1] <= 270) || (RobotArmDirections[2] >= 0 && RobotArmDirections[2] <= 120) || (RobotArmDirections[0] >= 0 && RobotArmDirections[0] <= 203))
                 {
                     TurrentServo(RobotArmDirections[1]);
@@ -830,12 +830,12 @@ namespace RoboticArm_XBoxController_GUI
          fpga.Send(_gimbalPhiPackage);
 
       }
-      private int Remap(int OldValue, int OldMax,int OldMin,int NewMax,int NewMin)
+      private int Remap(float OldValue, int OldMax,int OldMin,int NewMax,int NewMin)
        {
-            int OldRange = (OldMax - OldMin);
-            int NewRange = (NewMax - NewMin);
-            int NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
-            return NewValue;
+            float OldRange = (OldMax - OldMin);
+            float NewRange = (NewMax - NewMin);
+            float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+            return (int)NewValue;
        }
       // This method is executed on the worker thread and makes 
       // a thread-safe call on the TextBox control. 
