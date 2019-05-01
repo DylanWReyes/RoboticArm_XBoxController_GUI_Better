@@ -319,13 +319,16 @@ namespace RoboticArm_XBoxController_GUI
         void TurrentServo(int turrentServo)
         {
             byte[] turrentServobytes = ConvertInt32ToByteArray(turrentServo);//  MSB = index1,  LSB = index0
+            byte CheckSum = (byte)~(0x02 + turrentServobytes[1] + turrentServobytes[0] + 0x00);
             byte[] _turrentServoPackage = new byte[] {
-                0x01,                                   // Start of Transmission
+                0xFF,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
+                0x02,                                   //Write 
                 0xB0,                                   // ID of Device to be controlled (ALPHABETIC) ***NEW****
                 turrentServobytes[1],                   // MSB Digit in degrees  
                 turrentServobytes[0],                   // Second Digit in degrees  ###### Check ORDER!!
-                0x04                                    // End of Transmission
+                0x00,                                    // Error
+                CheckSum                                //Check sum
                 };
 
             fpga.Send(_turrentServoPackage);
@@ -333,14 +336,17 @@ namespace RoboticArm_XBoxController_GUI
 
         void ArmYSend(int armY)
         {
-            byte[] ArmYServobytes = ConvertInt32ToByteArray(armY);//  MSB = index1,  LSB = index0         
+            byte[] ArmYServobytes = ConvertInt32ToByteArray(armY);//  MSB = index1,  LSB = index0  
+            byte CheckSum = (byte)~(0x02 + ArmYServobytes[1] + ArmYServobytes[0] + 0x00);
             byte[] _armYPackage = new byte[] {
-                  0x01,                                   // Start of Transmission
+                  0xFF,                                   // Start of Transmission
                   0xFD,                                   // Header always 0xFD
+                  0x02,                                 //Write
                   0xE4,                                   // Command ID
                   ArmYServobytes[1],           // MSB Hex in Milimeters  Should always be since 0-255 is only 0000-00FF
                   ArmYServobytes[0],           // LSB Hex in Milimeters
-                  0x04                                    // End of Transmission
+                  0x00,                                    // End of Transmission
+                  CheckSum
                   };
 
             fpga.Send(_armYPackage);
@@ -348,26 +354,33 @@ namespace RoboticArm_XBoxController_GUI
         void EndEffectorAngleSend(int EndEffectorAngle)
         {
             byte[] EndEffectorAnglebytes = ConvertInt32ToByteArray(EndEffectorAngle);
+            byte CheckSum = (byte)~(0x02 + EndEffectorAnglebytes[1] + EndEffectorAnglebytes[0] + 0x00);
             byte[] _EndEffectorAnglePackage = new byte[]
             {
-                0x01,
+                0xFF,
                 0xFD,
+                0x02,
                 0xEA,
                 EndEffectorAnglebytes[1],
                 EndEffectorAnglebytes[0],
-                0x04
+                0x00,
+                CheckSum
             };
+            fpga.Send(_EndEffectorAnglePackage);
         }
         void ArmXSend(int armX)
         {
-            byte[] ArmXServobytes = ConvertInt32ToByteArray(armX);//  MSB = index1,  LSB = index0         
+            byte[] ArmXServobytes = ConvertInt32ToByteArray(armX);//  MSB = index1,  LSB = index0  
+            byte CheckSum = (byte)~(0x02 + ArmXServobytes[1] + ArmXServobytes[0] + 0x00);
             byte[] _armXPackage = new byte[] {
-                0x01,                                   // Start of Transmission
+                0xFF,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
+                0x02,
                 0xB4,                                   //Command ID
                 ArmXServobytes[1],           // MSB Hex in Milimeters  Should always be 00 since 0-255 is only 0000-00FF
                 ArmXServobytes[0],           // LSB Hex  in Milimeters 
-                0x04                                    // End of Transmission
+                0x00,                                    // End of Transmission
+                CheckSum
                 };
 
 
@@ -376,41 +389,50 @@ namespace RoboticArm_XBoxController_GUI
         void WheelAngleSend(int WheelAngle)
         {
             byte[] WheelAnglebytes = ConvertInt32ToByteArray(WheelAngle);
+            byte CheckSum = (byte)~(0x02 + WheelAnglebytes[1] + WheelAnglebytes[0] + 0x00);
             byte[] _wheelAnglePackage = new byte[]
             {
-                0x01,
+                0xFF,
                 0xFD,
+                0x02,
                 0xA8,
                 WheelAnglebytes[1],
                 WheelAnglebytes[0],
-                0x04
+                0x00,
+                CheckSum
             };
             fpga.Send(_wheelAnglePackage);
         }
         void WheelSpeedSend(int WheelSpeed)
         {
             byte[] WheelSpeedbytes = ConvertInt32ToByteArray(WheelSpeed);
+            byte CheckSum = (byte)~(0x02 + WheelSpeedbytes[1] + WheelSpeedbytes[0] + 0x00);
             byte[] _wheelSpeedPackage = new byte[]
             {
-                0x01,
+                0xFF,
                 0xFD,
+                0x02,
                 0xA0,
                 WheelSpeedbytes[1],
                 WheelSpeedbytes[0],
-                0x04
+                0x00,
+                CheckSum
             };
             fpga.Send(_wheelSpeedPackage);
         }
         void GimbalPhi(int gimbalPhi)
         {
-            byte[] GimbalPhibytes = ConvertInt32ToByteArray(gimbalPhi);//  MSB = index1,  LSB = index0         
+            byte[] GimbalPhibytes = ConvertInt32ToByteArray(gimbalPhi);//  MSB = index1,  LSB = index0     
+            byte CheckSum = (byte)~(0x02 + GimbalPhibytes[1] + GimbalPhibytes[0] + 0x00);
             byte[] _gimbalPhiPackage = new byte[] {
-                0x01,                                   // Start of Transmission
+                0xFF,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
+                0x02,
                 0xC0,                                   // Command ID
                 GimbalPhibytes[1],                      // MSB Hex in degrees  
                 GimbalPhibytes[0],                      // LSB Hex in degrees 
-                0x04                                    // End of Transmission
+                0x00,                                    // End of Transmission
+                CheckSum
                 };
 
             fpga.Send(_gimbalPhiPackage);
@@ -418,14 +440,16 @@ namespace RoboticArm_XBoxController_GUI
         void GimbalTheta(int GimbalTheta)
         {
             byte[] GimbalThetabytes = ConvertInt32ToByteArray(GimbalTheta);//  MSB = index1,  LSB = index0         
-
+            byte CheckSum = (byte)~(0x02 + GimbalThetabytes[1] + GimbalThetabytes[0] + 0x00);
             byte[] _gimbalThetaPackage = new byte[] {
-                0x01,                                   // Start of Transmission
+                0xFF,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
+                0x02,
                 0xC4,                                   // Command ID
                 GimbalThetabytes[1],           // MSB Digit in degrees  
                 GimbalThetabytes[0],           // LSB Third Digit in degrees 
-                0x04                                    // End of Transmission
+                0x00,                                    // End of Transmission
+                CheckSum
                 };
 
             fpga.Send(_gimbalThetaPackage);
@@ -477,13 +501,16 @@ namespace RoboticArm_XBoxController_GUI
         {
             int grippervalue = gripper ? 1 : 0; // converts to value from boolean 
             byte[] gripperByte = ConvertInt32ToByteArray(grippervalue);
+            byte CheckSum = (byte)~(0x02 + gripperByte[1] + gripperByte[0] + 0x00);
             byte[] _gripperPackage = new byte[] {
-                0x01,                                   // Start of Transmission
+                0xFF,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
+                0x02,
                 0xE8,                                   // Command ID
-                0x30,           // 00
+                gripperByte[1],           // 00
                 gripperByte[0],           // Boolean of if gripper is open or closed 
-                0x04                                    // End of Transmission
+                0x00,                                    // End of Transmission
+                CheckSum
                 };
 
 
