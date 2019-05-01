@@ -63,6 +63,7 @@ namespace RoboticArm_XBoxController_GUI
       private int xDir = 0;
       private int yDir = 0;
       private bool found = false; 
+      private int EndEffectorAngle = 90;
       UdpClientSocket udp_ball { get; set; }
       UdpClientSocket udp_bottle { get; set; }
       UdpClientSocket udp_CameraMode { get; set; }
@@ -106,8 +107,6 @@ namespace RoboticArm_XBoxController_GUI
             gimbalX = trackBar_gimbalX.Value;
             int DynamixelgimbalX = Remap(trackBar_gimbalX.Value, 360, 0, 4000, 0);
             GimbalPhi((int)gimbalX);
-            //dynamixel stuff
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
         }
 
         private void trackBar_ArmY_ValueChanged(object sender, EventArgs e)
@@ -122,27 +121,22 @@ namespace RoboticArm_XBoxController_GUI
             gimbalY = trackBar_gimbalY.Value;
             int DynamixelgimbalY =Remap(trackBar_gimbalY.Value, 100, 0, 512, 1655);
             GimbalTheta((int)gimbalY);
-            //Dynamixel stuff
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
         }
         private void trackbar_WheelSteering_ValueChanged(object sender, EventArgs e)
         {
             FrontWheelAngle = trackbar_WheelSteering.Value;
-            int DynamixelFrontWheelAngle = Remap(FrontWheelAngle, 54, 0, 2330, 1730);
-            int DynamixelBackWheelAngle = Remap(FrontWheelAngle, 54, 0, 1730, 2330);
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelBackWheelAngle);
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION, (ushort)DynamixelFrontWheelAngle);
+            WheelAngleSend(FrontWheelAngle);
         }
         private void trackBar_WheelSpeed_ValueChanged(object sender, EventArgs e)
         {
             WheelSpeed = trackBar_WheelSpeed.Value;
             int FPGAWheelSpeed = Remap(trackBar_WheelSpeed.Value, 99, 0, 255, 0);
-            byte[] FPGAWheelSpeedbytes = ConvertInt32ToByteArray(FPGAWheelSpeed);
-            byte[] _FPGAWheelSpeedPackage = new byte[] {
-                FPGAWheelSpeedbytes[0],                  
-                };
-
-            tempfpga.Send(_FPGAWheelSpeedPackage);
+            WheelAngleSend(FPGAWheelSpeed);
+        }
+        private void trackBar_EndEffectorAngle_ValueChanged(object sender, EventArgs e)
+        {
+            EndEffectorAngle = trackBar_EndEffectorAngle.Value;
+            EndEffectorAngleSend(EndEffectorAngle);
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
@@ -179,42 +173,14 @@ namespace RoboticArm_XBoxController_GUI
         private int BallX;
         private int BallY;
         private int Targetbit;
-        ///DYNAMIXEL VALUES
-        // Control table address
-        public const int ADDR_MX_TORQUE_ENABLE = 24;                  // Control table address is different in Dynamixel model
-        public const int ADDR_MX_GOAL_POSITION = 30;
-        public const int ADDR_MX_PRESENT_POSITION = 36;
-
-        // Protocol version
-        public const int PROTOCOL_VERSION = 1;                   // See which protocol version is used in the Dynamixel
-
-        // Default setting
-        public const int GIMBALYAW = 5;                   // Dynamixel ID: 1
-        public const int GIMBALPITCH = 6;
-        public const int FRONTWHEEL = 2;
-        public const int BACKWHEEL = 1;
-        public const int TURRENT = 3;
-        public const int BAUDRATE = 57600;
-        public const string DEVICENAME = "COM11";              // Check which port is being used on your controller                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
-
-        public const int TORQUE_ENABLE = 1;                   // Value for enabling the torque
-        public const int TORQUE_DISABLE = 0;                   // Value for disabling the torque
-        public const int GIMBALYAWSTART = 2000;
-        public const int GIMBALPITCHSTART = 1000;
-        public const int FRONTWHEELSTART = 2000;
-        public const int BACKWHEELSTART = 2000;
-        public const int TURRENTSTART = 1300;
-        ///DYNAMIXEL VALUES    
-        int port_num = dynamixel.portHandler(DEVICENAME);
+        
         Serial fpga = new Serial("COM4", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
-        Serial tempfpga = new Serial("COM10", 115200);
         public Form1()
         {
             InitializeComponent();
 
             //construct fpga
             fpga.PackageMode = Serial.PackageModes.UseFPGA;       // for FPGA
-            tempfpga.PackageMode = Serial.PackageModes.UseFPGA;
             //define callback
             fpga.PackageReceived = (bytes =>
             {
@@ -290,24 +256,7 @@ namespace RoboticArm_XBoxController_GUI
 
             });
             udp_ball.Start();
-            ///DYNAMIXEL CODE
-            dynamixel.packetHandler();
-            //dynamixel.openPort(port_num);
-            dynamixel.setBaudRate(port_num, BAUDRATE);
-            //ENABLE TORQUE
-            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
-            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
-          //  dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, TURRENT, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
-            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
-            dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
-            //SET START POS
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, GIMBALPITCHSTART);
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, GIMBALYAWSTART);
-           // dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, TURRENT, ADDR_MX_GOAL_POSITION, TURRENTSTART);
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION,FRONTWHEELSTART );
-            dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, BACKWHEELSTART);
-            ///DYNAMIXEL CODE
-            //tempfpga.Start();
+            
             //UNCOMMENT WHEN TESTING FPGA
             //fpga.Start();
 
@@ -340,10 +289,8 @@ namespace RoboticArm_XBoxController_GUI
          GimbalTheta((int)gimbalY);
          int DynamixelgimbalY = Remap(gimbalY, 100, 0, 512, 1655);
          int DynamixelgimbalX = Remap(gimbalX, 360, 0, 4000, 0);
-         //dynamixel stuff
-         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALYAW, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalX);
-         //Dynamixel stuff
-         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, GIMBALPITCH, ADDR_MX_GOAL_POSITION, (ushort)DynamixelgimbalY);
+         GimbalPhi((int)DynamixelgimbalX);
+         GimbalTheta((int)DynamixelgimbalY);
         }
       void SearchObject()
       {
@@ -375,7 +322,7 @@ namespace RoboticArm_XBoxController_GUI
             byte[] _turrentServoPackage = new byte[] {
                 0x01,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
-                0xBA,                                   // ID of Device to be controlled (ALPHABETIC) ***NEW****
+                0xB0,                                   // ID of Device to be controlled (ALPHABETIC) ***NEW****
                 turrentServobytes[1],                   // MSB Digit in degrees  
                 turrentServobytes[0],                   // Second Digit in degrees  ###### Check ORDER!!
                 0x04                                    // End of Transmission
@@ -390,7 +337,7 @@ namespace RoboticArm_XBoxController_GUI
             byte[] _armYPackage = new byte[] {
                   0x01,                                   // Start of Transmission
                   0xFD,                                   // Header always 0xFD
-                  0xEB,                                   // Command ID
+                  0xE4,                                   // Command ID
                   ArmYServobytes[1],           // MSB Hex in Milimeters  Should always be since 0-255 is only 0000-00FF
                   ArmYServobytes[0],           // LSB Hex in Milimeters
                   0x04                                    // End of Transmission
@@ -398,14 +345,26 @@ namespace RoboticArm_XBoxController_GUI
 
             fpga.Send(_armYPackage);
         }
-
+        void EndEffectorAngleSend(int EndEffectorAngle)
+        {
+            byte[] EndEffectorAnglebytes = ConvertInt32ToByteArray(EndEffectorAngle);
+            byte[] _EndEffectorAnglePackage = new byte[]
+            {
+                0x01,
+                0xFD,
+                0xEA,
+                EndEffectorAnglebytes[1],
+                EndEffectorAnglebytes[0],
+                0x04
+            };
+        }
         void ArmXSend(int armX)
         {
             byte[] ArmXServobytes = ConvertInt32ToByteArray(armX);//  MSB = index1,  LSB = index0         
             byte[] _armXPackage = new byte[] {
                 0x01,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
-                0xBB,                                   //Command ID
+                0xB4,                                   //Command ID
                 ArmXServobytes[1],           // MSB Hex in Milimeters  Should always be 00 since 0-255 is only 0000-00FF
                 ArmXServobytes[0],           // LSB Hex  in Milimeters 
                 0x04                                    // End of Transmission
@@ -414,14 +373,41 @@ namespace RoboticArm_XBoxController_GUI
 
             fpga.Send(_armXPackage);
         }
-
+        void WheelAngleSend(int WheelAngle)
+        {
+            byte[] WheelAnglebytes = ConvertInt32ToByteArray(WheelAngle);
+            byte[] _wheelAnglePackage = new byte[]
+            {
+                0x01,
+                0xFD,
+                0xA8,
+                WheelAnglebytes[1],
+                WheelAnglebytes[0],
+                0x04
+            };
+            fpga.Send(_wheelAnglePackage);
+        }
+        void WheelSpeedSend(int WheelSpeed)
+        {
+            byte[] WheelSpeedbytes = ConvertInt32ToByteArray(WheelSpeed);
+            byte[] _wheelSpeedPackage = new byte[]
+            {
+                0x01,
+                0xFD,
+                0xA0,
+                WheelSpeedbytes[1],
+                WheelSpeedbytes[0],
+                0x04
+            };
+            fpga.Send(_wheelSpeedPackage);
+        }
         void GimbalPhi(int gimbalPhi)
         {
             byte[] GimbalPhibytes = ConvertInt32ToByteArray(gimbalPhi);//  MSB = index1,  LSB = index0         
             byte[] _gimbalPhiPackage = new byte[] {
                 0x01,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
-                0xCA,                                   // Command ID
+                0xC0,                                   // Command ID
                 GimbalPhibytes[1],                      // MSB Hex in degrees  
                 GimbalPhibytes[0],                      // LSB Hex in degrees 
                 0x04                                    // End of Transmission
@@ -436,7 +422,7 @@ namespace RoboticArm_XBoxController_GUI
             byte[] _gimbalThetaPackage = new byte[] {
                 0x01,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
-                0xCB,                                   // Command ID
+                0xC4,                                   // Command ID
                 GimbalThetabytes[1],           // MSB Digit in degrees  
                 GimbalThetabytes[0],           // LSB Third Digit in degrees 
                 0x04                                    // End of Transmission
@@ -490,14 +476,13 @@ namespace RoboticArm_XBoxController_GUI
         void GripperControl(bool gripper)
         {
             int grippervalue = gripper ? 1 : 0; // converts to value from boolean 
-            byte[] gripperByte = Encoding.ASCII.GetBytes(grippervalue.ToString());
-            List<byte> gripperList = gripperByte.ToList();
+            byte[] gripperByte = ConvertInt32ToByteArray(grippervalue);
             byte[] _gripperPackage = new byte[] {
                 0x01,                                   // Start of Transmission
                 0xFD,                                   // Header always 0xFD
-                0xEC,                                   // Command ID
+                0xE8,                                   // Command ID
                 0x30,           // 00
-                gripperList[0],           // Boolean of if gripper is open or closed 
+                gripperByte[0],           // Boolean of if gripper is open or closed 
                 0x04                                    // End of Transmission
                 };
 
@@ -629,6 +614,8 @@ namespace RoboticArm_XBoxController_GUI
         {
 
         }
+
+
 
         void LidarRecieve()
         {

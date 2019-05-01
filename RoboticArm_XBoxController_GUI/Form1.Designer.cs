@@ -100,6 +100,8 @@
             this.trackBar_WheelSpeed = new System.Windows.Forms.TrackBar();
             this.label31 = new System.Windows.Forms.Label();
             this.Target = new System.Windows.Forms.Label();
+            this.trackBar_EndEffectorAngle = new System.Windows.Forms.TrackBar();
+            this.label32 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_base)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ArmY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_armX)).BeginInit();
@@ -113,6 +115,7 @@
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackbar_WheelSteering)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_WheelSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_EndEffectorAngle)).BeginInit();
             this.SuspendLayout();
             // 
             // timer1
@@ -788,7 +791,7 @@
             // 
             // trackbar_WheelSteering
             // 
-            this.trackbar_WheelSteering.Location = new System.Drawing.Point(1243, 213);
+            this.trackbar_WheelSteering.Location = new System.Drawing.Point(1243, 250);
             this.trackbar_WheelSteering.Margin = new System.Windows.Forms.Padding(4);
             this.trackbar_WheelSteering.Maximum = 54;
             this.trackbar_WheelSteering.Name = "trackbar_WheelSteering";
@@ -801,7 +804,7 @@
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(1336, 176);
+            this.label29.Location = new System.Drawing.Point(1336, 229);
             this.label29.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(88, 17);
@@ -811,7 +814,7 @@
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(1336, 267);
+            this.label30.Location = new System.Drawing.Point(1336, 310);
             this.label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(93, 17);
@@ -820,7 +823,7 @@
             // 
             // trackBar_WheelSpeed
             // 
-            this.trackBar_WheelSpeed.Location = new System.Drawing.Point(1243, 297);
+            this.trackBar_WheelSpeed.Location = new System.Drawing.Point(1243, 336);
             this.trackBar_WheelSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.trackBar_WheelSpeed.Maximum = 99;
             this.trackBar_WheelSpeed.Name = "trackBar_WheelSpeed";
@@ -848,11 +851,35 @@
             this.Target.Text = "--";
             this.Target.Click += new System.EventHandler(this.label32_Click);
             // 
+            // trackBar_EndEffectorAngle
+            // 
+            this.trackBar_EndEffectorAngle.Location = new System.Drawing.Point(1243, 176);
+            this.trackBar_EndEffectorAngle.Margin = new System.Windows.Forms.Padding(4);
+            this.trackBar_EndEffectorAngle.Maximum = 180;
+            this.trackBar_EndEffectorAngle.Name = "trackBar_EndEffectorAngle";
+            this.trackBar_EndEffectorAngle.Size = new System.Drawing.Size(262, 56);
+            this.trackBar_EndEffectorAngle.SmallChange = 5;
+            this.trackBar_EndEffectorAngle.TabIndex = 94;
+            this.trackBar_EndEffectorAngle.Value = 90;
+            this.trackBar_EndEffectorAngle.ValueChanged += new System.EventHandler(this.trackBar_EndEffectorAngle_ValueChanged);
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(1336, 150);
+            this.label32.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(89, 17);
+            this.label32.TabIndex = 95;
+            this.label32.Text = "End effector ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1571, 436);
+            this.Controls.Add(this.label32);
+            this.Controls.Add(this.trackBar_EndEffectorAngle);
             this.Controls.Add(this.Target);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.trackBar_WheelSpeed);
@@ -933,6 +960,7 @@
             this.groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackbar_WheelSteering)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_WheelSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_EndEffectorAngle)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1011,6 +1039,8 @@
         private System.Windows.Forms.TrackBar trackBar_WheelSpeed;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label Target;
+        private System.Windows.Forms.TrackBar trackBar_EndEffectorAngle;
+        private System.Windows.Forms.Label label32;
     }
 }
 
