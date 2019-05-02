@@ -270,7 +270,7 @@ namespace RoboticArm_XBoxController_GUI
             BottleX = BitConverter.ToInt32(bytes, sizeof(int));
             BottleY = BitConverter.ToInt32(bytes, 2*sizeof(int));
             Targetbit = BitConverter.ToInt32(bytes, 3 * sizeof(int));
-             if (track)
+             if (track && Targetbit==1)
              {
                  GimbalTracking(BottleX, BottleY);
              }
