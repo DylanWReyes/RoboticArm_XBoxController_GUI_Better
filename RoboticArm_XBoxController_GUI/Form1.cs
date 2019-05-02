@@ -13,7 +13,6 @@ using UGV.Core.IO;
 using System.Net.Sockets;
 using System.Net;
 using System.Text.RegularExpressions;
-using dynamixel_sdk;
 
 namespace RoboticArm_XBoxController_GUI
 {
@@ -54,7 +53,7 @@ namespace RoboticArm_XBoxController_GUI
       private int BackWheelAngle = 27;
       private bool gripper = true;
       private bool armReset = false;
-      private bool firstreset = false;
+      private bool firstreset = true;
       private bool PackageRecieved = false;
       private int RightEncoder = 0;
       private int LeftEnconder = 0;
@@ -174,7 +173,7 @@ namespace RoboticArm_XBoxController_GUI
         private int BallY;
         private int Targetbit;
         
-        Serial fpga = new Serial("COM4", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
+        Serial fpga = new Serial("COM7", 115200);  // use 9600 for FPGA, use 57600, andre code 115200 
         public Form1()
         {
             InitializeComponent();
@@ -258,7 +257,7 @@ namespace RoboticArm_XBoxController_GUI
             udp_ball.Start();
             
             //UNCOMMENT WHEN TESTING FPGA
-            //fpga.Start();
+            fpga.Start();
 
             // set timer event to start reading and updating from the controller
             timer1.Start();
