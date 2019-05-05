@@ -207,7 +207,7 @@ namespace RoboticArm_XBoxController_GUI
         ///DYNAMIXEL VALUES    
         int port_num = dynamixel.portHandler(DEVICENAME);
         Serial fpga = new Serial("COM4", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
-        Serial tempfpga = new Serial("COM10", 115200);
+        Serial tempfpga = new Serial("COM15", 115200);
         public Form1()
         {
             InitializeComponent();
@@ -216,43 +216,10 @@ namespace RoboticArm_XBoxController_GUI
             fpga.PackageMode = Serial.PackageModes.UseFPGA;       // for FPGA
             tempfpga.PackageMode = Serial.PackageModes.UseFPGA;
             //define callback
-            fpga.PackageReceived = (bytes =>
+            tempfpga.PackageReceived = (bytes =>
             {
                 Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
-                Console.WriteLine("package length: {0}", bytes.Length);
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    Console.WriteLine("byte {0}: {1}", i, (char)bytes[i]);
-                }
-                switch (bytes[1])
-                {
-                    case 0x4B:
-                        int temp = 0;
-                        int MSB = bytes[3] - 0x30;
-                        int SB =  bytes[4] - 0x30;
-                        int LSB = bytes[5] - 0x30;
-                        temp += LSB;
-                        temp += SB * 10;
-                        temp += MSB * 100;
-                        LidarDistance = temp;  
-                        PackageRecieved = true;
-                        break;
-                  case 0x49:
-                     LSB = bytes[5] - 0x30;
-                     if (LSB == 1)
-                        RightEncoder += 1;
-                     else
-                        RightEncoder -= 1;  
-                     break;
-                  case 0x4C:
-                     LSB = bytes[5] - 0x30;
-                     if (LSB == 1)
-                        LeftEnconder += 1;
-                     else
-                        LeftEnconder -= 1;
-                     break;
-                }
-                Console.WriteLine("\n");
+                LidarDistance = (int)bytes[0];
             });
             //start
 
@@ -307,7 +274,7 @@ namespace RoboticArm_XBoxController_GUI
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, FRONTWHEEL, ADDR_MX_GOAL_POSITION,FRONTWHEELSTART );
             dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, BACKWHEEL, ADDR_MX_GOAL_POSITION, BACKWHEELSTART);
             ///DYNAMIXEL CODE
-            //tempfpga.Start();
+            tempfpga.Start();
             //UNCOMMENT WHEN TESTING FPGA
             //fpga.Start();
 
@@ -330,8 +297,8 @@ namespace RoboticArm_XBoxController_GUI
       {
          //640 height
          //480 width
-         float FloatxError = ((float)xError - 240)/50;
-         float FloatyError = ((float)yError - 340)/50;
+         float FloatxError = ((float)xError - 319)/50;
+         float FloatyError = ((float)yError - 239)/50;
          if((gimbalY - FloatyError < 50 && gimbalY - FloatyError > 0) && (Math.Abs(FloatyError*50) > 10))
             gimbalY -= FloatyError;
          if ((gimbalX - FloatxError < 360 && gimbalX - FloatxError > 0) && (Math.Abs(FloatxError * 50) > 10))

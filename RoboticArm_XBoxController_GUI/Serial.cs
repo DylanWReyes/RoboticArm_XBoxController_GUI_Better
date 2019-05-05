@@ -92,6 +92,7 @@ namespace UGV.Core.IO
             message = new List<byte>();
             COM = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
             COM.DataReceived += new SerialDataReceivedEventHandler(OnDataReceived);
+            COM.ReceivedBytesThreshold = 1; 
         }
 
         public Serial(string portName, int baudRate, int checkTime)
@@ -171,88 +172,11 @@ namespace UGV.Core.IO
         /// </summary>
         void OnDataReceived(object sender, SerialDataReceivedEventArgs args)
         {
-            //count++;
-            while (COM.BytesToRead > 0)
-            {
-                //read byte from port
-                byte ByteRead = (byte)COM.ReadByte();
-                //add onto list
-                message.Add(ByteRead);
-                //remove first byte if message exceed size limit
-                if (message.Count > PackageMaxSizeLimit)
-                    message.RemoveAt(0);
-                //find package end
-                int loc = -1;
-                if (PackageMode == PackageModes.UseFPGA)
-                {
-                    // if first byte is start of header
-                    if (message[0] == (byte)0x01)
-                    {
-                        // find eof
-                        loc = message.IndexOf(0x04);
-                        // if eof detected
-                        if (loc > 0)
-                        {
-                            //fetch package
-                            if (message.Count == 9)
-                            {
-                                byte[] package = new byte[loc + 1];
-                                try
-                                {
-                                    int messageLength = loc + 1;
-                                    for (int i = 0; i < messageLength; i++)
-                                        package[i] = message[i];
-                                    //take off read package
-                                    message.RemoveRange(0, messageLength);
-                                    //do action of package received
-                                    if (PackageReceived != null)
-                                        PackageReceived(package);
-                                    count++;
-                                }
-                                catch (IndexOutOfRangeException) { }
-                            }
-                            else if(loc != -1) message.Clear();
 
-                        }
-
-
-                    }
-                    else message.Clear();
-                }
-                // else if not using FPGA
-                else
-                {
-                    if (PackageMode == PackageModes.UseEscapeToken)
-                    {
-                        //if eof detected
-                        loc = message.IndexOfSeq<byte>(EscapeToken);
-
-                    }
-                    else if (PackageMode == PackageModes.UseFunction)
-                    {
-                        //if eof detected
-                        loc = FindPackageEnd(message.ToArray());
-                    }
-                    //notify package if found
-                    if (loc > -1)
-                    {
-                        //fetch package
-                        byte[] package = new byte[loc];
-                        try
-                        {
-                            for (int i = 0; i < loc; i++)
-                                package[i] = message[i];
-                            //take off read package
-                            message.RemoveRange(0, loc + EscapeToken.Length);
-                            //do action of package received
-                            if (PackageReceived != null)
-                                PackageReceived(package);
-                            count++;
-                        }
-                        catch (IndexOutOfRangeException) { }
-                    }
-                }
-            }
+            byte ReadPack = (byte)COM.ReadByte();
+            byte[] SendPack = new byte[1];
+            SendPack[0] = ReadPack; 
+            PackageReceived(SendPack);
         }
         //reading a package
         void OnTick(object sender, System.Timers.ElapsedEventArgs e)
