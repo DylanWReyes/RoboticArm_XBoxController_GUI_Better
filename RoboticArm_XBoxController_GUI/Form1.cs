@@ -195,7 +195,7 @@ namespace RoboticArm_XBoxController_GUI
         public const int BACKWHEEL = 1;
         public const int TURRENT = 3;
         public const int BAUDRATE = 57600;
-        public const string DEVICENAME = "COM11";              // Check which port is being used on your controller                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+        public const string DEVICENAME = "COM14";              // Check which port is being used on your controller                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
         public const int TORQUE_ENABLE = 1;                   // Value for enabling the torque
         public const int TORQUE_DISABLE = 0;                   // Value for disabling the torque
@@ -207,7 +207,7 @@ namespace RoboticArm_XBoxController_GUI
         ///DYNAMIXEL VALUES    
         int port_num = dynamixel.portHandler(DEVICENAME);
         Serial fpga = new Serial("COM4", 9600);  // use 9600 for FPGA, use 57600, andre code 115200 
-        Serial tempfpga = new Serial("COM15", 115200);
+        Serial tempfpga = new Serial("COM16", 115200);
         public Form1()
         {
             InitializeComponent();

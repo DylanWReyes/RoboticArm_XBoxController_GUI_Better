@@ -78,3 +78,16 @@ C:\Users\UGV\Desktop\Working Robot Arm\RoboticArm_XBoxController_GUI\RoboticArm_
 C:\Users\UGV\Desktop\Working Robot Arm\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.XInput.dll
 C:\Users\UGV\Desktop\Working Robot Arm\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.xml
 C:\Users\UGV\Desktop\Working Robot Arm\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.XInput.xml
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\RoboticArm_XBoxController_GUI.exe.config
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\obj\Release\RoboticArm_XBoxController_GUI.exe
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\obj\Release\RoboticArm_XBoxController_GUI.pdb
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\RoboticArm_XBoxController_GUI.exe
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\RoboticArm_XBoxController_GUI.pdb
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.dll
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.XInput.dll
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.xml
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\bin\Release\SharpDX.XInput.xml
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\obj\Release\RoboticArm_XBoxController_GUI.csprojResolveAssemblyReference.cache
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\obj\Release\RoboticArm_XBoxController_GUI.Form1.resources
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\obj\Release\RoboticArm_XBoxController_GUI.Properties.Resources.resources
+C:\Users\UGV\Documents\GitHub\RoboticArm_XBoxController_GUI_Better\RoboticArm_XBoxController_GUI\obj\Release\RoboticArm_XBoxController_GUI.csproj.GenerateResource.Cache
